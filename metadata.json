@@ -1,0 +1,6 @@
+{
+  "name": "ChefFork",
+  "description": "A social network for amateur chefs and home cooks with structured recipe sharing and interactive recipe forking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
