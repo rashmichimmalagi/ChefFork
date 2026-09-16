@@ -96,6 +96,15 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Saved Recipes: bookmarks per user and recipe
+CREATE TABLE IF NOT EXISTS public.saved_recipes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  recipe_id UUID NOT NULL REFERENCES public.recipes(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT uq_user_recipe_save UNIQUE(user_id, recipe_id)
+);
+
 -- ==============================================================================
 -- 2. Performance Indexes
 -- ==============================================================================
@@ -111,6 +120,9 @@ CREATE INDEX IF NOT EXISTS idx_comments_recipe ON public.comments(recipe_id);
 CREATE INDEX IF NOT EXISTS idx_follows_follower ON public.follows(follower_id);
 CREATE INDEX IF NOT EXISTS idx_follows_following ON public.follows(following_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON public.notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_recipes_user ON public.saved_recipes(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_recipes_recipe ON public.saved_recipes(recipe_id);
+CREATE INDEX IF NOT EXISTS idx_saved_recipes_created ON public.saved_recipes(created_at DESC);
 
 -- ==============================================================================
 -- 3. Enable Row Level Security (RLS) on all tables
@@ -124,6 +136,7 @@ ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.saved_recipes ENABLE ROW LEVEL SECURITY;
 
 -- ==============================================================================
 -- 4. Granular Role Grants (Least Privilege)
@@ -399,3 +412,25 @@ CREATE POLICY "notifications_delete_own"
   ON public.notifications FOR DELETE
   TO authenticated
   USING (auth.uid() = user_id);
+
+-- ------------------------------------------------------------------------------
+-- SAVED RECIPES POLICIES (Bookmarks)
+-- ------------------------------------------------------------------------------
+-- Select: Users can ONLY view recipes they have personally saved (user_id = auth.uid())
+CREATE POLICY "saved_recipes_select_own"
+  ON public.saved_recipes FOR SELECT
+  TO authenticated
+  USING (auth.uid() = user_id);
+
+-- Insert: Users can ONLY bookmark recipes for their own account (user_id = auth.uid())
+CREATE POLICY "saved_recipes_insert_own"
+  ON public.saved_recipes FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() = user_id);
+
+-- Delete: Users can ONLY remove/unsave their own saved bookmarks
+CREATE POLICY "saved_recipes_delete_own"
+  ON public.saved_recipes FOR DELETE
+  TO authenticated
+  USING (auth.uid() = user_id);
+
