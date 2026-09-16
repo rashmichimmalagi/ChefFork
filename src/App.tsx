@@ -6,6 +6,7 @@ import { MobileNav } from './components/MobileNav';
 import { AuthModal } from './components/AuthModal';
 import { LandingPage } from './pages/LandingPage';
 import { VideoIntroPage } from './pages/VideoIntroPage';
+import { AboutPage } from './pages/AboutPage';
 import { HomeFeed } from './pages/HomeFeed';
 import { ExplorePage } from './pages/ExplorePage';
 import { RecipeEditor } from './pages/RecipeEditor';
@@ -279,6 +280,15 @@ function MainLayout() {
         {activePage === 'landing' && (
           <LandingPage
             onOpenRecipe={handleOpenRecipe}
+            onExplore={() => navigateTo('explore')}
+            onBackToIntro={() => navigateTo('intro')}
+            onNavigateAbout={() => navigateTo('about')}
+          />
+        )}
+
+        {activePage === 'about' && (
+          <AboutPage
+            onBack={() => goBack(currentUser ? 'feed' : 'landing')}
             onExplore={() => navigateTo('explore')}
           />
         )}

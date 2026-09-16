@@ -202,6 +202,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <span>Community</span>
           </button>
+
+          <button
+            id="nav-about-btn"
+            onClick={() => onNavigate('about')}
+            className={`relative px-3 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 ${
+              activePage === 'about'
+                ? 'text-orange-600 dark:text-orange-400 font-bold'
+                : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800/60'
+            }`}
+          >
+            <span>About</span>
+            {activePage === 'about' && (
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-orange-600 dark:bg-orange-500 rounded-full" />
+            )}
+          </button>
         </nav>
 
         {/* Center: Search Bar */}
@@ -479,6 +494,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="px-3 py-2 rounded-lg text-left text-sm font-semibold text-stone-700 dark:text-stone-300"
             >
               Community
+            </button>
+
+            <button
+              id="mobile-nav-about-btn"
+              onClick={() => {
+                onNavigate('about');
+                setMobileMenuOpen(false);
+              }}
+              className={`px-3 py-2 rounded-lg text-left text-sm font-semibold ${
+                activePage === 'about'
+                  ? 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400'
+                  : 'text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              About
             </button>
           </div>
 

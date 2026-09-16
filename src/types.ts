@@ -146,4 +146,4 @@ export interface ExploreFilterState {
   sortBy: 'popular' | 'forked' | 'recent' | 'quickest' | 'calories';
 }
 
-export type ActivePage = 'intro' | 'landing' | 'feed' | 'explore' | 'create' | 'recipe' | 'profile' | 'notifications' | 'reset-password' | 'following' | 'saved';
+export type ActivePage = 'intro' | 'landing' | 'about' | 'feed' | 'explore' | 'create' | 'recipe' | 'profile' | 'notifications' | 'reset-password' | 'following' | 'saved';

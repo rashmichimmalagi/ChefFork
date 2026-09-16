@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChefHat, GitFork, Heart, Sparkles, Clock, Compass, ArrowRight } from 'lucide-react';
+import { ChefHat, GitFork, Heart, Sparkles, Clock, Compass, ArrowRight, ArrowLeft, Info } from 'lucide-react';
 import { Recipe } from '../types';
 import { api, isVideoUrl } from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -8,9 +8,16 @@ import { Avatar } from '../components/Avatar';
 interface LandingPageProps {
   onOpenRecipe: (id: string) => void;
   onExplore: () => void;
+  onBackToIntro?: () => void;
+  onNavigateAbout?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onOpenRecipe, onExplore }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({
+  onOpenRecipe,
+  onExplore,
+  onBackToIntro,
+  onNavigateAbout,
+}) => {
   const { openAuthModal } = useAuth();
   const [featuredRecipes, setFeaturedRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,6 +40,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenRecipe, onExplor
 
   return (
     <div id="landing-page" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 pb-28">
+      {/* Top Navigation Row: Subtle Back to Intro button */}
+      <div className="mb-4 sm:mb-6 flex items-center justify-between">
+        {onBackToIntro ? (
+          <button
+            type="button"
+            id="landing-back-to-intro-btn"
+            onClick={onBackToIntro}
+            title="Back to Intro"
+            aria-label="Back to Intro"
+            className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-orange-600 dark:hover:text-orange-400 border border-stone-200 dark:border-stone-800 shadow-xs text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5 text-stone-500 dark:text-stone-400 group-hover:text-orange-500" />
+            <span>Back to Intro</span>
+          </button>
+        ) : <div />}
+
+        {onNavigateAbout && (
+          <button
+            type="button"
+            id="landing-top-about-btn"
+            onClick={onNavigateAbout}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-stone-600 dark:text-stone-300 hover:text-orange-600 dark:hover:text-orange-400 text-xs sm:text-sm font-semibold hover:bg-white dark:hover:bg-stone-900 border border-transparent hover:border-stone-200 dark:hover:border-stone-800 transition-all cursor-pointer"
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>About</span>
+          </button>
+        )}
+      </div>
+
       {/* Hero Section: Clean Non-Video Background */}
       <section
         id="landing-hero-section"
@@ -248,6 +284,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenRecipe, onExplor
           </div>
         )}
       </section>
+
+      {/* Subtle, Professional Footer */}
+      <footer
+        id="landing-footer"
+        className="mt-16 md:mt-20 pt-8 border-t border-stone-200/80 dark:border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-stone-500 dark:text-stone-400"
+      >
+        <div className="flex items-center gap-2">
+          <p id="landing-developer-credit" className="text-stone-500 dark:text-stone-400">
+            Developed by <span className="font-semibold text-stone-700 dark:text-stone-200">Rashmi M Chimmalagi</span>
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4 sm:gap-6">
+          {onNavigateAbout && (
+            <button
+              type="button"
+              id="landing-footer-about-btn"
+              onClick={onNavigateAbout}
+              className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium cursor-pointer"
+            >
+              About ChefFork
+            </button>
+          )}
+          <span className="text-stone-300 dark:text-stone-700">•</span>
+          <span>© {new Date().getFullYear()} ChefFork</span>
+        </div>
+      </footer>
     </div>
   );
 };
